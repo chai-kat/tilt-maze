@@ -1,5 +1,7 @@
 #ifndef I2C_H_
 #define I2C_H_
+#include <stdbool.h>
+
 
 void i2c_config();
 
