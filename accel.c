@@ -1,6 +1,9 @@
+#include "pic32mx.h"
 #include <stdint.h>
+#include "stdbool.h"
 #include "accel.h"
 #include "i2c.h"
+#include "LSM6DSO.h"
 
 /* 
 page 18,19 [1] I2C operation Table 11 onwards.
@@ -11,18 +14,6 @@ single byte write:
     - get ack
 - send sub address
     - get ack
-- send data
-     -get ack
--stop
-
-multi-byte write:
-- send start
-- send address + rw bit (w)
-    - get ack
-- send sub address
-    - get ack
-- send data
-     -get ack
 - send data
      -get ack
 -stop
@@ -40,6 +31,17 @@ single byte read:
     -send nack
 -stop
 
+multi-byte write:
+- send start
+- send address + rw bit (w)
+    - get ack
+- send sub address
+    - get ack
+- send data
+     -get ack
+- send data
+     -get ack
+-stop
 
 multi-byte read:
 - send start
@@ -64,100 +66,92 @@ multi-byte read:
 #define ACCEL_SENSOR_ADDR 0x6B
 #endif
 
-void accel_setup() {
+uint8_t get_register_single_byte(uint8_t register_address) {
+    uint8_t datareturn;
 
+    // address + write bit
+    do {
+        i2c_start();
+    } while (!i2c_send(ACCEL_SENSOR_ADDR << 1 | 0));
+
+    while(!i2c_send(register_address));
+
+    i2c_restart();
+
+    // address + read bit
+    i2c_send((ACCEL_SENSOR_ADDR << 1) | 1);
+    datareturn = i2c_recv();
+    i2c_nack();
+    i2c_stop();
+
+    return datareturn;
+}
+
+/* write a single byte of data given in "data" to register given in register_address*/
+void write_register_single_byte(uint8_t register_address, uint8_t data) {
+    // address + write bit
+    do {
+        i2c_start();
+    } while (!i2c_send((ACCEL_SENSOR_ADDR << 1) | 0));
+
+    while(!i2c_send(register_address));
+    while(!i2c_send(data)); // send until ACK
+    i2c_stop();
+}
+
+bool accel_data_available() {
+    // check STATUS_REG<0> = XLDA
+    // data ready if XLDA == 1
+    uint8_t status_reg_value = get_register_single_byte(STATUS_REG);
+    return (status_reg_value & 0x1);
+
+}
+
+bool gyro_data_available() {
+    // check STATUS_REG<1> = GDA
+    // data ready if GDA == 1
+    uint8_t status_reg_value = get_register_single_byte(STATUS_REG);
+    return (status_reg_value & 0x2);
+}
+
+void accel_setup() {
+    // from application note, 4.1 Startup Sequence
+    write_register_single_byte(INT1_CTRL, 0x01);
+    write_register_single_byte(CTRL1_XL, 0x60);
+
+    //TODO: add code for data ready interrupt? 
 }
 
 /* returns 2s complement binary number of output data*/
-uint16_t accel_x() {
-    uint16_t datareturn;
+int16_t accel_x() {
+    int16_t datareturn;
 
-    do {
-        i2c_start();
-    } while (!i2c_send(ACCEL_SENSOR_ADDR));
+    while(!accel_data_available());
+    datareturn = get_register_single_byte(OUTX_H_A);
+    datareturn = datareturn << 8;
+    datareturn |= get_register_single_byte(OUTX_L_A);
 
-    // TODO: wrap this line??? 
-    i2c_send(0x29); // x high subaddress (OUTX_H_A), page 41 [1]
-    i2c_restart();
-    i2c_send(ACCEL_SENSOR_ADDR);
-    datareturn = i2c_recv();
-    datareturn = (datareturn << 8);
-    i2c_nack();
-    i2c_stop();
+    return datareturn;
+}
 
-    do {
-        i2c_start();
-    } while(!i2c_send(ACCEL_SENSOR_ADDR));
+int16_t accel_y() {
+    int16_t datareturn;
 
-    // TODO: wrap this line???
-    i2c_send(0x28); // x low subaddress (OUTX_L_A), page 41 [1] 
-    i2c_restart();
-    i2c_send(ACCEL_SENSOR_ADDR);
-    datareturn = i2c_recv();
-    i2c_nack();
-    i2c_stop();
+    while(!accel_data_available());
+    datareturn = get_register_single_byte(OUTY_H_A);
+    datareturn = datareturn << 8;
+    datareturn |= get_register_single_byte(OUTY_L_A);
+
+    return datareturn;
+}
+
+int16_t accel_z() {
+    int16_t datareturn;
     
-    return datareturn;
-}
-
-uint16_t accel_y() {
-   uint16_t datareturn;
-
-    do {
-        i2c_start();
-    } while (!i2c_send(ACCEL_SENSOR_ADDR));
-
-    // TODO: wrap this line??? 
-    i2c_send(0x2B); // y high subaddress (OUTY_H_A), page 41 [1]
-    i2c_restart();
-    i2c_send(ACCEL_SENSOR_ADDR);
-    datareturn = i2c_recv();
-    datareturn = (datareturn << 8);
-    i2c_nack();
-    i2c_stop();
-
-    do {
-        i2c_start();
-    } while (!i2c_send(ACCEL_SENSOR_ADDR));
-
-    // TODO: wrap this line???
-    i2c_send(0x2A); // y low subaddress (OUTY_L_A), page 41 [1] 
-    i2c_restart();
-    i2c_send(ACCEL_SENSOR_ADDR);
-    datareturn = i2c_recv();
-    i2c_nack();
-    i2c_stop();
-
-    return datareturn;
-}
-
-uint16_t accel_z() {
-   uint16_t datareturn;
-
-    do {
-        i2c_start();
-    } while (!i2c_send(ACCEL_SENSOR_ADDR));
-
-    // TODO: wrap this line??? 
-    i2c_send(0x2D); // z high subaddress (OUTZ_H_A), page 41 [1]
-    i2c_restart();
-    i2c_send(ACCEL_SENSOR_ADDR);
-    datareturn = i2c_recv();
-    datareturn = (datareturn << 8);
-    i2c_nack();
-    i2c_stop();
-
-    do {
-        i2c_start();
-    } while (!i2c_send(ACCEL_SENSOR_ADDR));
-
-    // TODO: wrap this line???
-    i2c_send(0x2C); // z low subaddress (OUTZ_L_A), page 41 [1] 
-    i2c_restart();
-    i2c_send(ACCEL_SENSOR_ADDR);
-    datareturn = i2c_recv();
-    i2c_nack();
-    i2c_stop();
+    while(!accel_data_available());
+    datareturn = get_register_single_byte(OUTZ_H_A);
+    datareturn = datareturn << 8;
+    datareturn |= get_register_single_byte(OUTZ_L_A);
 
     return datareturn;
 }
