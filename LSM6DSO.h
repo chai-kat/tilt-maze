@@ -1,3 +1,6 @@
+#ifndef LSM6DSO_H_
+#define LSM6DSO_H_
+
 enum LSM6DSO_REGISTERS {
     FUNC_CFG_ACCESS = 0x1,
     PIN_CTRL = 0x2,
@@ -81,5 +84,7 @@ enum LSM6DSO_REGISTERS {
     FIFO_DATA_OUT_Y_L = 0x7B,
     FIFO_DATA_OUT_Y_H = 0x7C,
     FIFO_DATA_OUT_Z_L = 0x7D,
-    FIFO_DATA_OUT_X_H = 0x7E,
+    FIFO_DATA_OUT_Z_H = 0x7E,
 };
+
+#endif //LSM6DSO_H_

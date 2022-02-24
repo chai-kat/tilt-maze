@@ -119,10 +119,15 @@ void accel_setup() {
     write_register_single_byte(INT1_CTRL, 0x01);
     write_register_single_byte(CTRL1_XL, 0x60);
 
-    //TODO: add code for data ready interrupt? 
+    //add code for data ready interrupt? 
 }
 
-/* returns 2s complement binary number of output data*/
+/* 
+returns 2s complement binary number of output data in x-direction
+output is scaled integer of sensor mode max value.
+e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
+similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
+*/
 int16_t accel_x() {
     int16_t datareturn;
 
@@ -134,6 +139,13 @@ int16_t accel_x() {
     return datareturn;
 }
 
+
+/* 
+returns 2s complement binary number of output data in x-direction
+output is scaled integer of sensor mode max value.
+e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
+similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
+*/
 int16_t accel_y() {
     int16_t datareturn;
 
@@ -145,6 +157,12 @@ int16_t accel_y() {
     return datareturn;
 }
 
+/* 
+returns 2s complement binary number of output data in x-direction
+output is scaled integer of sensor mode max value.
+e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
+similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
+*/
 int16_t accel_z() {
     int16_t datareturn;
     
