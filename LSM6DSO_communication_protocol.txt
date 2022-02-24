@@ -1,0 +1,57 @@
+/* 
+page 18,19 [1] I2C operation Table 11 onwards.
+
+single byte write:
+- send start
+- send address + rw bit (w)
+    - get ack
+- send sub address
+    - get ack
+- send data
+     -get ack
+-stop
+
+single byte read:
+- send start
+- send address + rw bit (w)
+    - get ack
+- send sub address
+    - get ack
+- REPEATED START
+- send address + rw bit (r)
+     -get ack
+- RECV data
+    -send nack
+-stop
+
+multi-byte write:
+- send start
+- send address + rw bit (w)
+    - get ack
+- send sub address
+    - get ack
+- send data
+     -get ack
+- send data
+     -get ack
+-stop
+
+multi-byte read:
+- send start
+- send address + rw bit (w)
+    - get ack
+- send sub address
+    - get ack
+- REPEATED START
+- send address + rw bit (r)
+     -get ack
+- RECV data
+    -send ack
+- recv data
+    -send ack
+- recv data
+    -send nack
+-stop
+
+Source: https://cdn.sparkfun.com/assets/2/3/c/6/5/lsm6dso.pdf [1]
+*/

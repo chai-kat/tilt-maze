@@ -5,63 +5,6 @@
 #include "i2c.h"
 #include "LSM6DSO.h"
 
-/* 
-page 18,19 [1] I2C operation Table 11 onwards.
-
-single byte write:
-- send start
-- send address + rw bit (w)
-    - get ack
-- send sub address
-    - get ack
-- send data
-     -get ack
--stop
-
-single byte read:
-- send start
-- send address + rw bit (w)
-    - get ack
-- send sub address
-    - get ack
-- REPEATED START
-- send address + rw bit (r)
-     -get ack
-- RECV data
-    -send nack
--stop
-
-multi-byte write:
-- send start
-- send address + rw bit (w)
-    - get ack
-- send sub address
-    - get ack
-- send data
-     -get ack
-- send data
-     -get ack
--stop
-
-multi-byte read:
-- send start
-- send address + rw bit (w)
-    - get ack
-- send sub address
-    - get ack
-- REPEATED START
-- send address + rw bit (r)
-     -get ack
-- RECV data
-    -send ack
-- recv data
-    -send ack
-- recv data
-    -send nack
--stop
-
-*/
-
 #ifndef ACCEL_SENSOR_ADDR
 #define ACCEL_SENSOR_ADDR 0x6B
 #endif
@@ -141,7 +84,7 @@ int16_t accel_x() {
 
 
 /* 
-returns 2s complement binary number of output data in x-direction
+returns 2s complement binary number of output data in y-direction
 output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
@@ -158,7 +101,7 @@ int16_t accel_y() {
 }
 
 /* 
-returns 2s complement binary number of output data in x-direction
+returns 2s complement binary number of output data in z-direction
 output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
