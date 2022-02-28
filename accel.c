@@ -47,7 +47,6 @@ bool accel_data_available() {
     // data ready if XLDA == 1
     uint8_t status_reg_value = get_register_single_byte(STATUS_REG);
     return (status_reg_value & 0x1);
-
 }
 
 bool gyro_data_available() {
