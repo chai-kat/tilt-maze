@@ -1,0 +1,6 @@
+main.c.o: main.c \
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h \
+ displayfunctions.h
+main.c :
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h :
+ displayfunctions.h :

@@ -15,6 +15,9 @@ LINKSCRIPT	:= p$(shell echo "$(DEVICE)" | tr '[:upper:]' '[:lower:]').ld
 CFLAGS		+= -ffreestanding -march=mips32r2 -msoft-float -Wa,-msoft-float
 ASFLAGS		+= -msoft-float
 LDFLAGS		+= -T $(LINKSCRIPT)
+
+# Self declared flags
+CFLAGS		+= -std=c99
 LDFLAGS		+= -lc
 
 # Filenames
