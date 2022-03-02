@@ -11,5 +11,3 @@ int16_t accel_y();
 int16_t accel_z();
 
 #endif //ACCEL_H_
-
-
