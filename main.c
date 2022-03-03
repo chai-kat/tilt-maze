@@ -27,6 +27,41 @@ void interrupt_handler() {
 	// fill later
 }
 
+// const uint32_t const maze[128] = {
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// 	0xffffffff, 0x99999999, 0x99999999, 0xffffffff,
+// };
+
 
 int main() {
 	/* Set up peripheral bus clock */
@@ -64,6 +99,10 @@ int main() {
 	SPI2CONSET = 0x8000;
 
 	srand(725); // change random seed later?
+	ball.x = 1;
+	ball.y = 1;
+	ball.vx = 3;
+	ball.vy = 3;
 
 	i2c_config();
 	accel_setup();
@@ -74,21 +113,33 @@ int main() {
 
 	generate_blank_cell_array(screen);
 	generate_maze(screen);
+	convertbitsize(screen, converted_screen);
+	display_image(0, converted_screen);
+	
+	draw_ball(ball.x, ball.y, screen);
+	convertbitsize(screen, converted_screen);
 	display_image(0, converted_screen);
 
-	const int dt = 0.1;
+	const double dt = 1;
 	for(;;) {
-		// get acceleration
-		int ax = conv_accel_to_g(accel_x()) * 10; // 1g = 10ms2
-		int ay = conv_accel_to_g(accel_y()) * 10; // 1g = 10ms2
-
 		while(!check_win()) {
-			undraw_ball(ball.x, ball.y, screen);
-			update_position(screen, dt);
-			update_velocity(ax, ay, dt);
-			draw_ball(ball.x, ball.y, screen);
+			// get acceleration
+			int ax = conv_accel_to_g(accel_x()); // 1g = 10ms2
+			int ay = conv_accel_to_g(accel_y()); // 1g = 10ms2
 
-			delay(10000);
+			// undraw_ball(ball.x, ball.y, screen);
+			update_position(screen, dt);
+
+			PORTE = ay / 10;
+			// delay(100000);
+			// PORTE = ball.vy;
+			update_velocity(0, 0, dt);
+			
+			draw_ball(ball.x, ball.y, screen);
+			convertbitsize(screen, converted_screen);
+			display_image(0, converted_screen);
+
+			delay(100);
 		}
 	}
 	return 0;

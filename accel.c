@@ -75,8 +75,8 @@ output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
 */
-uint16_t accel_x() {
-    uint16_t datareturn;
+int16_t accel_x() {
+    int16_t datareturn;
 
     while(!accel_data_available());
     datareturn = get_register_single_byte(OUTX_H_A);
@@ -93,8 +93,8 @@ output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
 */
-uint16_t accel_y() {
-    uint16_t datareturn;
+int16_t accel_y() {
+    int16_t datareturn;
 
     while(!accel_data_available());
     datareturn = get_register_single_byte(OUTY_H_A);
@@ -110,8 +110,8 @@ output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
 */
-uint16_t accel_z() {
-    uint16_t datareturn;
+int16_t accel_z() {
+    int16_t datareturn;
     
     while(!accel_data_available());
     datareturn = get_register_single_byte(OUTZ_H_A);
@@ -121,9 +121,13 @@ uint16_t accel_z() {
     return datareturn;
 }
 
-int conv_accel_to_g(uint16_t accel) {
+int conv_accel_to_g(int16_t a) {
+    int accel = (int) a;
     const int ACCEL_MODE = 2; // implies max ±2g
-    return (ACCEL_MODE * (accel/32767)); // 32767 max value of 16-bit 2s complement int
+    accel *= ACCEL_MODE;
+    accel *= 100;
+    accel /= 32767;
+    return accel; // 32767 max value of 16-bit 2s complement int
 }
 
 // References:

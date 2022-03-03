@@ -9,10 +9,10 @@ bool accel_data_available();
 void accel_setup();
 void accel_interrupts_setup();
 
-uint16_t accel_x();
-uint16_t accel_y();
-uint16_t accel_z();
+int16_t accel_x();
+int16_t accel_y();
+int16_t accel_z();
 
-int conv_accel_to_g(uint16_t accel);
+int conv_accel_to_g(int16_t a);
 
 #endif //ACCEL_H_

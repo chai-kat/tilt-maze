@@ -109,8 +109,8 @@ void draw_ball (int x, int y,  uint32_t *screen) {
 }
 
 void undraw_ball (int x, int y, uint32_t *screen) {
-	screen[x] = screen[x] & (~BALL_REP  << (y));
-	screen[x+1] = screen[x+1] & (~BALL_REP  << (y));	
+	screen[x] = screen[x] & ~(BALL_REP  << (y));
+	screen[x+1] = screen[x+1] & ~(BALL_REP  << (y));	
 }
 
 void update_position (uint32_t *screen, double dt) {
@@ -118,7 +118,8 @@ void update_position (uint32_t *screen, double dt) {
 
 	if (ball.vx<0) {
 		if ((screen[ball.x-1] & (BALL_REP  << ball.y)) > 0) {
-			dx = 0;	//don't move left	
+			dx = 0;	//don't move left
+			ball.vx = 0;	
 		}
 		else {
 			dx = ball.vx*dt;
@@ -126,12 +127,31 @@ void update_position (uint32_t *screen, double dt) {
 	}
 	if (ball.vx>0) {
 		if ((screen[ball.x+2] & (BALL_REP  << ball.y)) > 0) {
-			dx = 0;	//don't move right	
+			dx = 0;	//don't move right
+			ball.vx = 0;	
 		}
 		else {
 			dx = ball.vx*dt;
 		}	
 	}
+
+	// if (ball.vx<0) {
+    //     if (((screen[ball.x-1] & (0b00000000000000000000000000000001 << ball.y)) > 0) || ((screen[ball.x-1] & (0b00000000000000000000000000000010 << ball.y)))) {
+	// 		dx = 0;	//don't move left	
+	// 	}
+	// 	else {
+	// 		dx = ball.vx;
+	// 	}
+	// }
+	// if (ball.vx<0) {
+	// 	if (((screen[ball.x+2] & (0b00000000000000000000000000000001 << ball.y)) > 0) || ((screen[ball.x+2] & (0b00000000000000000000000000000010 << ball.y)))) {
+	// 		dx = 0;	//don't move right	
+	// 	}
+	// 	else {
+	// 		dx = ball.vx;
+	// 	}
+	// }
+
 	if (ball.vy<0) {
 		if ((screen[ball.x] & (0b00000000000000000000000000000001  << (ball.y-1))) > 0) {
 			dy = 0;	//don't move up	
