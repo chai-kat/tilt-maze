@@ -70,8 +70,8 @@ output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
 */
-int16_t accel_x() {
-    int16_t datareturn;
+uint16_t accel_x() {
+    uint16_t datareturn;
 
     while(!accel_data_available());
     datareturn = get_register_single_byte(OUTX_H_A);
@@ -88,8 +88,8 @@ output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
 */
-int16_t accel_y() {
-    int16_t datareturn;
+uint16_t accel_y() {
+    uint16_t datareturn;
 
     while(!accel_data_available());
     datareturn = get_register_single_byte(OUTY_H_A);
@@ -105,8 +105,8 @@ output is scaled integer of sensor mode max value.
 e.g. if mode is ±2g, then accel_value = 2*(value/MAX_VALUE_INT_16_BIT)
 similarily for ±16g, give accel_value= 16*(value/MAX_VALUE_INT_16_BIT)
 */
-int16_t accel_z() {
-    int16_t datareturn;
+uint16_t accel_z() {
+    uint16_t datareturn;
     
     while(!accel_data_available());
     datareturn = get_register_single_byte(OUTZ_H_A);
