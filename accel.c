@@ -64,6 +64,11 @@ void accel_setup() {
     //add code for data ready interrupt? 
 }
 
+// sets up data ready interrupt
+void accel_interrupts_setup() {
+
+}
+
 /* 
 returns 2s complement binary number of output data in x-direction
 output is scaled integer of sensor mode max value.
@@ -114,6 +119,11 @@ uint16_t accel_z() {
     datareturn |= get_register_single_byte(OUTZ_L_A);
 
     return datareturn;
+}
+
+int conv_accel_to_g(uint16_t accel) {
+    const int ACCEL_MODE = 2; // implies max ±2g
+    return (ACCEL_MODE * (accel/32767)); // 32767 max value of 16-bit 2s complement int
 }
 
 // References:

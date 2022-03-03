@@ -11,21 +11,19 @@
 // https://github.com/is1200-example-projects/mcb32tools/issues/6
 void *stdout = (void *) 0;
 
-// ball
-
-struct Ball {
-	int x; // x position on screen
-	int y; // y position on screen
-	int vx; // x velocity
-	int vy; // y velocity
-} ball;
-
-// get suggested new position, THEN update 
-void ball_next_position(int* dx, int* dy, int dt) {
-	// gives acceleration in milligs so div by 2000 which is the chosen range.
-	*dx = ball.vx * accel_x() * dt;
-	*dy = ball.vy * accel_y() * dt;
+void interrupt_setup() {
+	// add timer interrupt setup?
+	
+	// add accel interrupt setup?
+	// accel_interrupts_setup();
+	
+	enable_interrupts();
 }
+
+void interrupt_handler() {
+	// fill later
+}
+
 
 int main() {
 	srand(725); // change random seed later?
@@ -38,8 +36,20 @@ int main() {
 	generate_blank_cell_array(screen);
 	generate_maze(screen);
 	
+	const int dt = 0.1;
 	for(;;) {
-		
+		// get acceleration
+		int ax = conv_accel_to_g(accel_x()) * 10; // 1g = 10ms2
+		int ay = conv_accel_to_g(accel_y()) * 10; // 1g = 10ms2
+
+		while(!check_win()) {
+			undraw_ball(ball.x, ball.y, screen);
+			update_position(screen, dt);
+			update_velocity(ax, ay, dt);
+			draw_ball(ball.x, ball.y, screen);
+
+			delay(10000);
+		}
 	}
 	return 0;
 }
