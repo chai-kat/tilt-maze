@@ -20,7 +20,7 @@ const int BALL_REP = 0b00000000000000000000000000000011;
 
 struct Ball ball;
 
-static void delay(int cyc) {
+void delay(int cyc) {
 	int i;
 	for(i = cyc; i > 0; i--);
 }
