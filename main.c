@@ -12,14 +12,14 @@ extern struct Ball ball;
 // https://github.com/is1200-example-projects/mcb32tools/issues/6
 void *stdout = (void *) 0;
 
-void interrupt_setup() {
-	// add timer interrupt setup?
+// void interrupt_setup() {
+// 	// add timer interrupt setup?
 	
-	// add accel interrupt setup?
-	// accel_interrupts_setup();
+// 	// add accel interrupt setup?
+// 	// accel_interrupts_setup();
 	
-	enable_interrupts();
-}
+// 	enable_interrupts();
+// }
 
 void interrupt_handler() {
 	// fill later
@@ -31,12 +31,15 @@ int main() {
 
 	i2c_config();
 	accel_setup();
-	
+	display_init();
+
 	uint32_t screen[128];
+	uint32_t converted_screen[512];
 
 	generate_blank_cell_array(screen);
 	generate_maze(screen);
-	
+	display_image(0, converted_screen);
+
 	const int dt = 0.1;
 	for(;;) {
 		// get acceleration

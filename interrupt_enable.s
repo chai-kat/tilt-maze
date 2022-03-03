@@ -1,3 +1,3 @@
-.global enable_interrupts
+.globl enable_interrupts
 enable_interrupts:
     ei
