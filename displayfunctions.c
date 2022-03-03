@@ -113,45 +113,49 @@ void undraw_ball (int x, int y, uint32_t *screen) {
 	screen[x+1] = screen[x+1] & (~BALL_REP  << (y));	
 }
 
-void update_position (uint32_t *screen) {
-	int kx;
-	int ky;
+void update_position (uint32_t *screen, int dt) {
+	int dx = vx*dt;
+	int dy = vx*dt;
 
 	if (ax<0) {
 		if ((screen[ball.x-1] & (BALL_REP  << ball.y)) > 0) {
-			kx = 0;	//don't move left	
+			dx = 0;	//don't move left	
 		}
 		else {
-			kx = vx;
+			dx = ball.vx*dt;
 		}
 	}
 	if (ax>0) {
 		if ((screen[ball.x+2] & (BALL_REP  << ball.y)) > 0) {
-			kx = 0;	//don't move right	
+			dx = 0;	//don't move right	
 		}
 		else {
-			kx = vx;
+			dx = ball.vx*dt;
 		}	
 	}
 	if (ay<0) {
 		if ((screen[ball.x] & (0b00000000000000000000000000000001  << (ball.y-1))) > 0) {
-			ky = 0;	//don't move up	
+			dy = 0;	//don't move up	
 		}
 		else {
-			ky = vy;
+			dy = ball.vy*dt;
 		}
 	}
 	if (ay>0) {
 		// to check if the ball can move one pixel downwards (bottom of ball is offset by 1, hence 10 instead of 01)
 		if ((screen[ball.x] & (0b00000000000000000000000000000010  << (ball.y+1))) > 0) {
-			ky = 0;	//don't move down	
+			dy = 0;	//don't move down	
 		}
 		else {
-			ky = vy;
+			dy = ball.vy*dt;
 		}
 	}
-	ball.x += kx;
-	ball.y += ky;
+	ball.x += dx;
+	ball.y += dy;
+}
+
+void update_velocity () {
+
 }
 
 bool check_win ()  {
