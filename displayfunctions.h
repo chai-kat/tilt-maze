@@ -1,4 +1,4 @@
-#ifndef DISPLAY_FUNCTIONS_   /* Include guard */
+#ifndef DISPLAY_FUNCTIONS_
 #define DISPLAY_FUNCTIONS_ 
 
 uint8_t spi_send_recv(uint8_t data);
@@ -15,4 +15,4 @@ void update_velocity (int ax, int ay, int dt);
 
 bool check_win ();
 
-#endif // FOO_H_
+#endif
