@@ -1,10 +1,12 @@
 #include <pic32mx.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "displayfunctions.h"
 #include "i2c.h"
 #include "accel.h"
 #include "maze_functions.h"
+
 
 extern struct Ball ball;
 
@@ -27,6 +29,40 @@ void interrupt_handler() {
 
 
 int main() {
+	/* Set up peripheral bus clock */
+	OSCCON &= ~0x180000;
+	OSCCON |= 0x080000;
+	
+	/* Set up output pins */
+	AD1PCFG = 0xFFFF;
+	ODCE = 0x0;
+	TRISECLR = 0xFF;
+	PORTE = 0x0;
+	
+	/* Output pins for display signals */
+	PORTF = 0xFFFF;
+	PORTG = (1 << 9);
+	ODCF = 0x0;
+	ODCG = 0x0;
+	TRISFCLR = 0x70;
+	TRISGCLR = 0x200;
+	
+	/* Set up input pins */
+	TRISDSET = (1 << 8);
+	TRISFSET = (1 << 1);
+	
+	/* Set up SPI as master */
+	SPI2CON = 0;
+	SPI2BRG = 4;
+	
+	/* Clear SPIROV*/
+	SPI2STATCLR &= ~0x40;
+	/* Set CKP = 1, MSTEN = 1; */
+        SPI2CON |= 0x60;
+	
+	/* Turn on SPI */
+	SPI2CONSET = 0x8000;
+
 	srand(725); // change random seed later?
 
 	i2c_config();
@@ -34,7 +70,7 @@ int main() {
 	display_init();
 
 	uint32_t screen[128];
-	uint32_t converted_screen[512];
+	uint8_t converted_screen[512];
 
 	generate_blank_cell_array(screen);
 	generate_maze(screen);
