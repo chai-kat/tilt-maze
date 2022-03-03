@@ -6,7 +6,6 @@
 #define DISPLAY_COMMAND_DATA PORTFbits.RF4
 #define DISPLAY_RESET PORTGbits.RG9
 
-
 #define DISPLAY_VDD_PORT PORTF
 #define DISPLAY_VDD_MASK 0x40
 #define DISPLAY_VBATT_PORT PORTF
@@ -15,6 +14,12 @@
 #define DISPLAY_COMMAND_DATA_MASK 0x10
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
+
+struct Ball {
+	int x;
+	int y;
+} ball;
+
 
 void delay(int cyc) {
 	int i;
@@ -107,11 +112,6 @@ void undraw_ball (int x, int y, uint32_t *screen) {
 	screen[x] = screen[x] & (~BALL_REP  << (y));
 	screen[x+1] = screen[x+1] & (~BALL_REP  << (y));	
 }
-
-struct Ball {
-	int x;
-	int y;
-} ball;
 
 void update_position (uint32_t *screen) {
 	int kx;
