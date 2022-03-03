@@ -3,8 +3,7 @@
 #include <stdbool.h>
 #include "maze_functions.h"
 
-// NOTE: uses STDLIB.
-// TODO: add -lc to LDFLAGS to enable stdlib link.
+// NOTE: uses STDLIB. Included -lc flag in make.
 
 // NOTE: Cell size hardcoded as 4x4. 
 // Don't really want to mess around with weirder divisions.
