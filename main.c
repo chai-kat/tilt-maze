@@ -22,10 +22,24 @@ struct Ball {
 
 // get suggested new position, THEN update 
 void ball_next_position(int* dx, int* dy, int dt) {
+	// gives acceleration in milligs so div by 2000 which is the chosen range.
 	*dx = ball.vx * accel_x() * dt;
 	*dy = ball.vy * accel_y() * dt;
 }
 
 int main() {
+	srand(725); // change random seed later?
+
+	i2c_config();
+	accel_setup();
+	
+	uint32_t screen[128];
+
+	generate_blank_cell_array(screen);
+	generate_maze(screen);
+	
+	for(;;) {
+		
+	}
 	return 0;
 }

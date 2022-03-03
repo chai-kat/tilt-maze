@@ -8,11 +8,11 @@
 // NOTE: Cell size hardcoded as 4x4. 
 // Don't really want to mess around with weirder divisions.
 
-const int ROW_SIZE = 32;
-const int COL_SIZE = 8;
+static const int ROW_SIZE = 32;
+static const int COL_SIZE = 8;
 
-const int SCREEN_ROW_SIZE = 128; // 4 * ROW_SIZE;
-const int SCREEN_COL_SIZE = 32;  // 4 * COL_SIZE;
+static const int SCREEN_ROW_SIZE = 128; // 4 * ROW_SIZE;
+static const int SCREEN_COL_SIZE = 32;  // 4 * COL_SIZE;
 
 void generate_blank_cell_array(uint32_t* cell_array) {
     for(int i = 0; i < SCREEN_ROW_SIZE; i += 4) {
