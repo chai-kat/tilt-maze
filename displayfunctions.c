@@ -122,7 +122,7 @@ void update_position (uint32_t *screen) {
 			kx = 0;	//don't move left	
 		}
 		else {
-			kx = ax;
+			kx = vx;
 		}
 	}
 	if (ax>0) {
@@ -130,7 +130,7 @@ void update_position (uint32_t *screen) {
 			kx = 0;	//don't move right	
 		}
 		else {
-			kx = ax;
+			kx = vx;
 		}	
 	}
 	if (ay<0) {
@@ -138,7 +138,7 @@ void update_position (uint32_t *screen) {
 			ky = 0;	//don't move up	
 		}
 		else {
-			ky = ay;
+			ky = vy;
 		}
 	}
 	if (ay>0) {
@@ -147,7 +147,7 @@ void update_position (uint32_t *screen) {
 			ky = 0;	//don't move down	
 		}
 		else {
-			ky = ay;
+			ky = vy;
 		}
 	}
 	ball.x += kx;
