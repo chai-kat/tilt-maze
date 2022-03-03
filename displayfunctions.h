@@ -1,4 +1,4 @@
-#ifndef DISPLAY_FUNCTIONS_   /* Include guard */
+#ifndef DISPLAY_FUNCTIONS_
 #define DISPLAY_FUNCTIONS_ 
 #include <stdbool.h>
 
@@ -21,4 +21,4 @@ void update_velocity (int ax, int ay, double dt);
 
 bool check_win ();
 
-#endif // FOO_H_
+#endif
