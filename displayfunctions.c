@@ -3,19 +3,31 @@
 #include <stdbool.h>
 #include "displayfunctions.h"
 
-#define DISPLAY_VDD PORTFbits.RF6
-#define DISPLAY_VBATT PORTFbits.RF5
-#define DISPLAY_COMMAND_DATA PORTFbits.RF4
-#define DISPLAY_RESET PORTGbits.RG9
+// #define DISPLAY_VDD PORTFbits.RF6
+// #define DISPLAY_VBATT PORTFbits.RF5
+// #define DISPLAY_COMMAND_DATA PORTFbits.RF4
+// #define DISPLAY_RESET PORTGbits.RG9
 
-#define DISPLAY_VDD_PORT PORTF
-#define DISPLAY_VDD_MASK 0x40
-#define DISPLAY_VBATT_PORT PORTF
-#define DISPLAY_VBATT_MASK 0x20
-#define DISPLAY_COMMAND_DATA_PORT PORTF
-#define DISPLAY_COMMAND_DATA_MASK 0x10
-#define DISPLAY_RESET_PORT PORTG
-#define DISPLAY_RESET_MASK 0x200
+// #define DISPLAY_VDD_PORT PORTF
+// #define DISPLAY_VDD_MASK 0x40
+// #define DISPLAY_VBATT_PORT PORTF
+// #define DISPLAY_VBATT_MASK 0x20
+// #define DISPLAY_COMMAND_DATA_PORT PORTF
+// #define DISPLAY_COMMAND_DATA_MASK 0x10
+// #define DISPLAY_RESET_PORT PORTG
+// #define DISPLAY_RESET_MASK 0x200
+
+#define DISPLAY_CHANGE_TO_COMMAND_MODE (PORTFCLR = 0x10)
+#define DISPLAY_CHANGE_TO_DATA_MODE (PORTFSET = 0x10)
+
+#define DISPLAY_ACTIVATE_RESET (PORTGCLR = 0x200)
+#define DISPLAY_DO_NOT_RESET (PORTGSET = 0x200)
+
+#define DISPLAY_ACTIVATE_VDD (PORTFCLR = 0x40)
+#define DISPLAY_ACTIVATE_VBAT (PORTFCLR = 0x20)
+
+#define DISPLAY_TURN_OFF_VDD (PORTFSET = 0x40)
+#define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
 
 const int BALL_REP = 0b00000000000000000000000000000011;
 
@@ -34,15 +46,20 @@ uint8_t spi_send_recv(uint8_t data) {
 }
 
 void display_init() {
-	DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+	//DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+	DISPLAY_CHANGE_TO_COMMAND_MODE; //clear and set to be able to send command
 	delay(10);
-	DISPLAY_VDD_PORT &= ~DISPLAY_VDD_MASK;
+	//DISPLAY_VDD_PORT &= ~DISPLAY_VDD_MASK;
+	DISPLAY_ACTIVATE_VDD; //turn on power
+
 	delay(1000000);
 	
 	spi_send_recv(0xAE);
-	DISPLAY_RESET_PORT &= ~DISPLAY_RESET_MASK;
+	//DISPLAY_RESET_PORT &= ~DISPLAY_RESET_MASK;
+	DISPLAY_ACTIVATE_RESET;
 	delay(10);
-	DISPLAY_RESET_PORT |= DISPLAY_RESET_MASK;
+	//DISPLAY_RESET_PORT |= DISPLAY_RESET_MASK;
+	DISPLAY_DO_NOT_RESET;
 	delay(10);
 	
 	spi_send_recv(0x8D);
@@ -51,7 +68,9 @@ void display_init() {
 	spi_send_recv(0xD9);
 	spi_send_recv(0xF1);
 	
-	DISPLAY_VBATT_PORT &= ~DISPLAY_VBATT_MASK;
+	//DISPLAY_VBATT_PORT &= ~DISPLAY_VBATT_MASK;
+	//turn on vcc
+    DISPLAY_ACTIVATE_VBAT;
 	delay(10000000);
 	
 	spi_send_recv(0xA1);
@@ -88,15 +107,18 @@ void display_image(int x, const uint8_t *data) {
 	int i, j;
 	
 	for(i = 0; i < 4; i++) {
-		DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+		//DISPLAY_COMMAND_DATA_PORT &= ~DISPLAY_COMMAND_DATA_MASK;
+		DISPLAY_CHANGE_TO_COMMAND_MODE; //set to recieve command
+
 		spi_send_recv(0x22);
 		spi_send_recv(i);
 		
 		spi_send_recv(x & 0xF);
 		spi_send_recv(0x10 | ((x >> 4) & 0xF));
 		
-		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
-		
+		//DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
+		DISPLAY_CHANGE_TO_DATA_MODE;
+
 		for(j = 0; j < 32*4; j++)
 			spi_send_recv(~data[i*32*4 + j]);
 	}
