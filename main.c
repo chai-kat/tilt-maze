@@ -6,6 +6,7 @@
 #include "accel.h"
 #include "maze_functions.h"
 
+extern struct Ball ball;
 
 // Uses MCB32Tools stdlib, so must define stdout in accordance with:
 // https://github.com/is1200-example-projects/mcb32tools/issues/6

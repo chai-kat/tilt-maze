@@ -2,12 +2,14 @@
 #define DISPLAY_FUNCTIONS_ 
 #include <stdbool.h>
 
-extern struct Ball {
+struct Ball {
 	int vx, vy;
 	int x, y;
 };
 
 uint8_t spi_send_recv(uint8_t data);
+
+void delay(int cyc);
 
 void display_init();
 void convertbitsize(const uint32_t *data, uint8_t *result);
