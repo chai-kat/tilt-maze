@@ -121,6 +121,8 @@ int16_t accel_z() {
     return datareturn;
 }
 
+// given raw acceleration value, returns it in ms2.
+// actually deci-gs, yes weird unit but consider 1g = 10ms2. (1/10 g * 10 ms/g)
 int conv_accel_to_g(int16_t a) {
     int accel = (int) a;
     const int ACCEL_MODE = 2; // implies max ±2g

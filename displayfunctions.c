@@ -113,64 +113,100 @@ void undraw_ball (int x, int y, uint32_t *screen) {
 	screen[x+1] = screen[x+1] & ~(BALL_REP  << (y));	
 }
 
-void update_position (uint32_t *screen, double dt) {
-	int dx, dy;
 
+// int sx,sy | -2 <= sx,sy <= 2
+// if sx,sy > 0: dx = 1, return;
+// else calculate sx and sy
+
+void update_position (uint32_t *screen, double dt) {
+	// number of scheduled steps
+	static int sx, sy;
+
+	int dx = 0;
+	int dy = 0;
+	
+	// ball going left
 	if (ball.vx<0) {
 		if ((screen[ball.x-1] & (BALL_REP  << ball.y)) > 0) {
 			dx = 0;	//don't move left
-			ball.vx = 0;	
+			ball.vx = 0;
+			if (sx < 0) {sx = 0;} //reset sx because wall in direction of travel
 		}
 		else {
-			dx = ball.vx*dt;
+			dx = ball.vx * dt;
+			if (sx == 0) {sx = ball.vx*dt;}
 		}
 	}
+
+	// ball going right
 	if (ball.vx>0) {
-		if ((screen[ball.x+2] & (BALL_REP  << ball.y)) > 0) {
+		if ((screen[ball.x+2] & (BALL_REP << ball.y)) > 0) {
 			dx = 0;	//don't move right
-			ball.vx = 0;	
+			ball.vx = 0;
+			if (sx > 0) {sx = 0;} //reset sx because wall in direction of travel	
 		}
 		else {
-			dx = ball.vx*dt;
+			// dx = ball.vx * dt;
+			if (sx == 0) {sx = ball.vx * dt;}
 		}	
 	}
 
-	// if (ball.vx<0) {
-    //     if (((screen[ball.x-1] & (0b00000000000000000000000000000001 << ball.y)) > 0) || ((screen[ball.x-1] & (0b00000000000000000000000000000010 << ball.y)))) {
-	// 		dx = 0;	//don't move left	
-	// 	}
-	// 	else {
-	// 		dx = ball.vx;
-	// 	}
-	// }
-	// if (ball.vx<0) {
-	// 	if (((screen[ball.x+2] & (0b00000000000000000000000000000001 << ball.y)) > 0) || ((screen[ball.x+2] & (0b00000000000000000000000000000010 << ball.y)))) {
-	// 		dx = 0;	//don't move right	
-	// 	}
-	// 	else {
-	// 		dx = ball.vx;
-	// 	}
-	// }
-
+	// ball going up
 	if (ball.vy<0) {
-		if ((screen[ball.x] & (0b00000000000000000000000000000001  << (ball.y-1))) > 0) {
+		if (((screen[ball.x] & (0b00000000000000000000000000000001  << (ball.y-1))) > 0) 
+		|| ((screen[ball.x+1] & (0b00000000000000000000000000000001  << (ball.y-1))) > 0)) {
 			dy = 0;	//don't move up	
+			ball.vy = 0;
+			if (sy < 0) {sy = 0;} //reset sy because wall in direction of travel
 		}
 		else {
 			dy = ball.vy*dt;
+			if (sy == 0) {sy = ball.vy*dt;}
 		}
 	}
+
+	//ball going down
 	if (ball.vy>0) {
 		// to check if the ball can move one pixel downwards (bottom of ball is offset by 1, hence 10 instead of 01)
-		if ((screen[ball.x] & (0b00000000000000000000000000000010  << (ball.y+1))) > 0) {
-			dy = 0;	//don't move down	
+		if (((screen[ball.x] & (0b00000000000000000000000000000010  << (ball.y+1))) > 0) 
+		|| ((screen[ball.x+1] & (0b00000000000000000000000000000010  << (ball.y+1))) > 0)) {
+			dy = 0;	//don't move down
+			ball.vy = 0;
+			if (sy > 0) {sy = 0;} //reset sy because wall in direction of travel
 		}
 		else {
-			dy = ball.vy*dt;
+			if (sy == 0) {sy = ball.vy*dt;}
 		}
 	}
-	ball.x += dx;
-	ball.y += dy;
+
+	// guard against too many steps before recalculation.
+	const int MAX_STEPS = 1+1;
+	sx %= MAX_STEPS;
+	sy %= MAX_STEPS;
+
+	// can get sign of k by doing k % 2.
+	if (sx > 0) {
+		ball.x++;
+		sx--;
+		return;
+	}
+	else if (sx < 0) {
+		ball.x--;
+		sx++;
+		return;
+	}
+
+	if (sy > 0) {
+		ball.y++;
+		sy--;
+	}
+	else if (sy < 0) {
+		ball.y--;
+		sy++;
+	}
+
+	// ball.x += dx;
+	// ball.y += dy;
 }
 
 void update_velocity (int ax, int ay, double dt) {

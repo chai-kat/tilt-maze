@@ -111,9 +111,6 @@ int main() {
 	uint32_t screen[128];
 	uint8_t converted_screen[512];
 
-	generate_blank_cell_array(screen);
-	generate_maze(screen);
-	convertbitsize(screen, converted_screen);
 	display_image(0, converted_screen);
 	
 	draw_ball(ball.x, ball.y, screen);
@@ -122,25 +119,39 @@ int main() {
 
 	const double dt = 1;
 	for(;;) {
+		generate_blank_cell_array(screen);
+		generate_maze(screen);
+		convertbitsize(screen, converted_screen);
+
 		while(!check_win()) {
 			// get acceleration
-			int ax = conv_accel_to_g(accel_x()); // 1g = 10ms2
-			int ay = conv_accel_to_g(accel_y()); // 1g = 10ms2
+			int ax = conv_accel_to_g(accel_x()); // unit ms2
+			int ay = conv_accel_to_g(accel_y()); // unit ms2
 
-			// undraw_ball(ball.x, ball.y, screen);
+			PORTE = ball.vy;
+
+			undraw_ball(ball.x, ball.y, screen);
 			update_position(screen, dt);
-
-			PORTE = ay / 10;
-			// delay(100000);
-			// PORTE = ball.vy;
-			update_velocity(0, 0, dt);
-			
+			update_velocity(ax/6, ay/6, dt);
 			draw_ball(ball.x, ball.y, screen);
+
 			convertbitsize(screen, converted_screen);
 			display_image(0, converted_screen);
 
-			delay(100);
+			delay(20000);
 		}
+
+		for (int i=0; i < 6; i++) {
+			PORTESET = 0xff;
+			delay(500000);
+			PORTECLR = 0xff;
+			delay(500000);
+		}
+
+		// reset ball
+		undraw_ball(ball.x, ball.y, screen);
+		ball.x = 1;
+		ball.y = 1;
 	}
 	return 0;
 }
