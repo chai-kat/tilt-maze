@@ -18,11 +18,7 @@
 
 const int BALL_REP = 0b00000000000000000000000000000011;
 
-extern struct Ball {
-	int vx, vy;
-	int x, y;
-} ball;
-
+struct Ball ball;
 
 static void delay(int cyc) {
 	int i;
@@ -157,8 +153,8 @@ void update_position (uint32_t *screen, double dt) {
 }
 
 void update_velocity (int ax, int ay, double dt) {
-ball.vx = ball.vx + ax*dt;
-ball.vy = ball.vy + ay*dt;
+    ball.vx = ball.vx + ax*dt;
+    ball.vy = ball.vy + ay*dt;
 }
 
 bool check_win ()  {
