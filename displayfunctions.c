@@ -116,7 +116,7 @@ void undraw_ball (int x, int y, uint32_t *screen) {
 	screen[x+1] = screen[x+1] & (~BALL_REP  << (y));	
 }
 
-void update_position (uint32_t *screen, int dt) {
+void update_position (uint32_t *screen, double dt) {
 	int dx, dy;
 
 	if (ball.vx<0) {
@@ -156,8 +156,9 @@ void update_position (uint32_t *screen, int dt) {
 	ball.y += dy;
 }
 
-void update_velocity (int ax, int ay, int dt) {
-
+void update_velocity (int ax, int ay, double dt) {
+ball.vx = ball.vx + ax*dt;
+ball.vy = ball.vy + ay*dt;
 }
 
 bool check_win ()  {
