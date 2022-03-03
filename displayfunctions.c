@@ -1,5 +1,6 @@
 #include <pic32mx.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
@@ -116,8 +117,7 @@ void undraw_ball (int x, int y, uint32_t *screen) {
 }
 
 void update_position (uint32_t *screen, int dt) {
-	int dx = vx*dt;
-	int dy = vy*dt;
+	int dx, dy;
 
 	if (vx<0) {
 		if ((screen[ball.x-1] & (BALL_REP  << ball.y)) > 0) {
