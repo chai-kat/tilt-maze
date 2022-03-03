@@ -18,7 +18,7 @@
 
 const int BALL_REP = 0b00000000000000000000000000000011;
 
-struct Ball {
+extern struct Ball {
 	int vx, vy;
 	int x, y;
 } ball;
@@ -119,7 +119,7 @@ void undraw_ball (int x, int y, uint32_t *screen) {
 void update_position (uint32_t *screen, int dt) {
 	int dx, dy;
 
-	if (vx<0) {
+	if (ball.vx<0) {
 		if ((screen[ball.x-1] & (BALL_REP  << ball.y)) > 0) {
 			dx = 0;	//don't move left	
 		}
@@ -127,7 +127,7 @@ void update_position (uint32_t *screen, int dt) {
 			dx = ball.vx*dt;
 		}
 	}
-	if (vx>0) {
+	if (ball.vx>0) {
 		if ((screen[ball.x+2] & (BALL_REP  << ball.y)) > 0) {
 			dx = 0;	//don't move right	
 		}
@@ -135,7 +135,7 @@ void update_position (uint32_t *screen, int dt) {
 			dx = ball.vx*dt;
 		}	
 	}
-	if (vy<0) {
+	if (ball.vy<0) {
 		if ((screen[ball.x] & (0b00000000000000000000000000000001  << (ball.y-1))) > 0) {
 			dy = 0;	//don't move up	
 		}
@@ -143,7 +143,7 @@ void update_position (uint32_t *screen, int dt) {
 			dy = ball.vy*dt;
 		}
 	}
-	if (vy>0) {
+	if (ball.vy>0) {
 		// to check if the ball can move one pixel downwards (bottom of ball is offset by 1, hence 10 instead of 01)
 		if ((screen[ball.x] & (0b00000000000000000000000000000010  << (ball.y+1))) > 0) {
 			dy = 0;	//don't move down	
