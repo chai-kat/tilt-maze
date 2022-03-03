@@ -1,6 +1,7 @@
 #include <pic32mx.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "displayfunctions.h"
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
