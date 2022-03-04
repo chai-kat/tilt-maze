@@ -88,7 +88,7 @@ void convertbitsize(const uint32_t *data, uint8_t *result) {
 	}
 }
 
-void display_image(int x, const uint8_t *data) {
+void display_image(const uint8_t *data) {
 	int i, j;
 	
 	for(i = 0; i < 4; i++) {
@@ -98,13 +98,13 @@ void display_image(int x, const uint8_t *data) {
 		spi_send_recv(i);		//page number
 		
 		//start at the left  column
-		spi_send_recv(x & 0xF);						//set low nybble of column
-		spi_send_recv(0x10 | ((x >> 4) & 0xF));		//set high nybble of column
+		spi_send_recv(0xF);			//set low nybble of column
+		spi_send_recv(0x10);		//set high nybble of column
 		
 		DISPLAY_CHANGE_TO_DATA_MODE;
 
-		for(j = 0; j < 32*4; j++)
-			spi_send_recv(~data[i*32*4 + j]);
+		for(j = 0; j < 128; j++)
+			spi_send_recv(~data[i*128 + j]);
 	}
 }
 
