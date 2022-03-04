@@ -13,7 +13,7 @@ void delay(int cyc);
 
 void display_init();
 void convertbitsize(const uint32_t *data, uint8_t *result);
-void display_image(int x, const uint8_t *data);
+void display_image(const uint8_t *data);
 
 void draw_ball (int x, int y,  uint32_t *screen);
 void undraw_ball (int x, int y, uint32_t *screen);
