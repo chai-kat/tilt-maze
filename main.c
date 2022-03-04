@@ -111,11 +111,11 @@ int main() {
 	uint32_t screen[128];
 	uint8_t converted_screen[512];
 
-	display_image(0, converted_screen);
+	display_image(converted_screen);
 	
 	draw_ball(ball.x, ball.y, screen);
 	convertbitsize(screen, converted_screen);
-	display_image(0, converted_screen);
+	display_image(converted_screen);
 
 	const double dt = 1;
 	int wins = 0;
@@ -137,7 +137,7 @@ int main() {
 			draw_ball(ball.x, ball.y, screen);
 
 			convertbitsize(screen, converted_screen);
-			display_image(0, converted_screen);
+			display_image(converted_screen);
 
 			delay(20000);
 		}
