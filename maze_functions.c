@@ -143,9 +143,6 @@ void generate_maze(uint32_t* screen) {
             next_row_array[column] = (COL_SIZE-1) * ROW_SIZE + column;
     }
 
-    // for(int column = (COL_SIZE - 1) * ROW_SIZE; column < COL_SIZE * ROW_SIZE; column++) {
-    //         next_row_array[column] = column;
-    // }
     
     //----- randomly create vertical connections
     int amt_vertical_conns = 0;

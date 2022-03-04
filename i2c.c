@@ -3,9 +3,6 @@
 #include <stdbool.h>
 #include "i2c.h"
 
-// TODO: handle I2COV (I2C overflow), I2CxRCR fully read before I2CxRCV finished
-// need to check I2C1STAT<6> for I2COV bit.
-
 /* configure i2c bus*/
 void i2c_config() {
 	// want to set i2c baud rate to around 400 kHz (fast mode)
@@ -16,17 +13,8 @@ void i2c_config() {
 	// set I2C1CON<15> = 1, to enable I2C module
 	I2C1CONSET = 1 << 15;
 
-    //TODO: possibly set SIDL bit? 
-
-
     // read data and throw it away (x only exists in local context)
     int x = I2C1RCV;
-
-    // TODO: don't have to send start in this function, DELETE???
-	// check stop bit I2C1STAT<4> to ensure idle, then assert start condition on SDA1 SCL1
-	// while(!(I2C1STAT & 0x10));
-
-	// I2C1CONSET = 1 << 0; // set start enable
 }
 
 /* wait until i2c bus idle*/
@@ -53,8 +41,7 @@ bool i2c_send(uint8_t data) {
 /* return byte of data from bus*/
 uint8_t i2c_recv() {
     wait_i2c_idle();
-    // I2C1CON<3> = RCEN = 1 to enable receive
-    I2C1CONSET = (1 << 3);
+    I2C1CONSET = (1 << 3); // I2C1CON<3> = RCEN = 1 to enable receive
     wait_i2c_idle();
     
     I2C1STATCLR = 1 << 6; //I2COV = 0, to indicate no overflow happening rn.
@@ -81,8 +68,7 @@ void i2c_nack() {
 /* send start sequence on bus*/
 void i2c_start() {
     // From "24.5.1 Generating a Start Bus Event" (pg21)
-    // TODO: second wait (below line) borrowed from hello-temperature. Not sure why.
-    // second wait likely to see if PIC hardware has deasserted the bus
+    // second wait to see if PIC hardware has deasserted the bus
     wait_i2c_idle();
     I2C1CONSET = (1 << 0); // set I2C1CON<0> = SEN
     wait_i2c_idle();
@@ -93,7 +79,7 @@ void i2c_start() {
 void i2c_restart() {
     wait_i2c_idle();
     I2C1CONSET = (1 << 1); // set I2C1CON<1> = RSEN
-    // second wait likely to see if PIC hardware has deasserted the bus
+    // second wait to see if PIC hardware has deasserted the bus
     wait_i2c_idle();
 }
 
