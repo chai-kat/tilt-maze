@@ -129,7 +129,7 @@ int main() {
 			int ax = conv_accel_to_g(accel_x()); // unit ms2
 			int ay = conv_accel_to_g(accel_y()); // unit ms2
 
-			PORTE = ball.vy;
+			PORTE = ball.x;
 
 			undraw_ball(ball.x, ball.y, screen);
 			update_position(screen, dt);
@@ -139,7 +139,9 @@ int main() {
 			convertbitsize(screen, converted_screen);
 			display_image(converted_screen);
 
-			delay(20000);
+			int avg_v = (ball.vx + ball.vy) / 2;
+
+			delay(200000 / (avg_v + 1));
 		}
 
 		for (int i=0; i < 6; i++) {
