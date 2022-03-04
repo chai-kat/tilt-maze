@@ -25,10 +25,10 @@ void delay(int cyc) {
 }
 
 uint8_t spi_send_recv(uint8_t data) {
-	while(!(SPI2STAT & 0x08));
-	SPI2BUF = data;
-	while(!(SPI2STAT & 0x01));
-	return SPI2BUF;
+	while(!(SPI2STAT & 0x08)); //while SPI transmit buffer in not empty
+	SPI2BUF = data; 	//send data to BUF
+	while(!(SPI2STAT & 0x01)); //while SPI receive buffer is not full
+	return SPI2BUF;		//receive data from BUF
 }
 
 void display_init() {
@@ -38,28 +38,32 @@ void display_init() {
 
 	delay(1000000);
 	
+	// Display off command
 	spi_send_recv(0xAE);
 	DISPLAY_ACTIVATE_RESET;
 	delay(10);
 	DISPLAY_DO_NOT_RESET;
 	delay(10);
 	
+	// Send the Set Charge Pump and Set Pre-Charge Period commands
 	spi_send_recv(0x8D);
 	spi_send_recv(0x14);
 	
 	spi_send_recv(0xD9);
 	spi_send_recv(0xF1);
 	
-	//turn on vcc
     DISPLAY_ACTIVATE_VBAT; //turn on VCC
 	delay(10000000);
 	
-	spi_send_recv(0xA1);
-	spi_send_recv(0xC8);
+	// Send the commands to invert the display. This puts the display origin in the upper left corner.
+	spi_send_recv(0xA1);	//remap  columns
+	spi_send_recv(0xC8);	//remap the rows
 	
-	spi_send_recv(0xDA);
-	spi_send_recv(0x20);
+	// Send the commands to select sequential COM configuration. This makes the display memory non-interleaved.
+	spi_send_recv(0xDA);	//set COM configuration command
+	spi_send_recv(0x20);	//sequential COM, left/right remap enabled
 	
+	// Send Display On command
 	spi_send_recv(0xAF);
 }
 
