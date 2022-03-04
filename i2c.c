@@ -38,7 +38,9 @@ void wait_i2c_idle() {
     while(I2C1CON & 0x1F || I2C1STAT & (1 << 14));
 }
 
-/* send a byte of data on bus, return ack/nack*/
+/* send a byte of data on bus, return ack/nack
+returns 1 when acknowledge, 0 when nack. 
+*/
 bool i2c_send(uint8_t data) {
     wait_i2c_idle();
     I2C1TRN = data;
@@ -55,8 +57,7 @@ uint8_t i2c_recv() {
     I2C1CONSET = (1 << 3);
     wait_i2c_idle();
     
-    // TODO: figure out why??
-    I2C1STATCLR = 1 << 6; //I2COV = 0, WHY??
+    I2C1STATCLR = 1 << 6; //I2COV = 0, to indicate no overflow happening rn.
 
     return I2C1RCV;
 }

@@ -9,6 +9,7 @@
 #define ACCEL_SENSOR_ADDR 0x6B
 #endif
 
+// get byte of data from sensor internal register at register_address
 uint8_t get_register_single_byte(uint8_t register_address) {
     uint8_t datareturn;
 

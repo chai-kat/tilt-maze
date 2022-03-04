@@ -118,6 +118,7 @@ int main() {
 	display_image(0, converted_screen);
 
 	const double dt = 1;
+	int wins = 0;
 	for(;;) {
 		generate_blank_cell_array(screen);
 		generate_maze(screen);
@@ -152,6 +153,7 @@ int main() {
 		undraw_ball(ball.x, ball.y, screen);
 		ball.x = 1;
 		ball.y = 1;
+		wins++; // TODO: Unused! Show with PORTE? 
 	}
 	return 0;
 }
