@@ -128,8 +128,8 @@ void update_position (uint32_t *screen, double dt) {
 	// number of scheduled steps
 	static int sx, sy;
 
-	int dx = 0;
-	int dy = 0;
+	// int dx = 0;
+	// int dy = 0;
 	
 	// ball going left
 	if (ball.vx<0) {
