@@ -11,5 +11,5 @@ A visualization of the display functions can be found in the MazeGenCollated Jup
 https://user-images.githubusercontent.com/17334965/156857018-122f21ee-c25b-437e-9cdb-dc94ad912707.mov
 
 # Contributions
-Chaitanya Katpatal: I2C functions, LSM6DSO library, maze generation code
+Chaitanya Katpatal: I2C functions, LSM6DSO library, maze generation code <br />
 Adam Mehdi: Screen drawing functionality, graphics/collision logic
