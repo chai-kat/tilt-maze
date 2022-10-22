@@ -14,6 +14,4 @@ https://user-images.githubusercontent.com/17334965/156857018-122f21ee-c25b-437e-
 Chaitanya Katpatal: I2C functions, LSM6DSO library, maze generation code <br />
 Adam Mehdi: Screen drawing functionality, graphics/collision logic
 
-Buck, Jamis. “Maze Generation: Eller's Algorithm.” The Buckblog, 29 Dec. 2010, https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm.
-
 J. Buck, “Maze Generation: Eller's Algorithm,” The Buckblog, 29-Dec-2010. [Online]. Available: https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm. [Accessed: 05-Mar-2022]. 
